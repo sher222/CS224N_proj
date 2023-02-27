@@ -2,7 +2,7 @@ import json
 import random
 
 # Load the JSON file
-with open('data.json', 'r') as f:
+with open('data/words.json', 'r') as f:
     data = json.load(f)
 
 # Extract the word and definition as one string
@@ -24,6 +24,7 @@ for word_def in word_defs:
     # Remove the word in question from the example sentences
     for i, ex in enumerate(examples):
         examples[i] = ex.replace(word_def.split(':')[0], '_________')
+
     # Choose 5 random words from the JSON file
     choices = random.sample([entry['word'] for entry in data if entry['word'] != word_def.split(':')[0]], 5)
     choices.append(word_def.split(':')[0])
