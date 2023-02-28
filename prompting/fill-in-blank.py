@@ -2,7 +2,7 @@ import json
 import random
 
 # Load the JSON file
-with open('data/words.json', 'r') as f:
+with open('../data/finalWords.json', 'r') as f:
     data = json.load(f)
 
 # Extract the word and definition as one string
