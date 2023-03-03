@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import os
 # read the file into a string
 with open('../data/words.json', 'r') as f:
     data = f.read()
@@ -8,9 +9,22 @@ with open('../data/words.json', 'r') as f:
 fixed_data = []
 counter = 0
 for line in data.splitlines():
-    if counter >= 100:
+    if counter >= 10000:
         break
-    fixed_data.append(json.loads(line))
+    obj = json.loads(line)
+    # filter out words that contain more than one word
+    if ' ' not in obj['word']:
+        # remove the specified attributes from each object in the fixed_data list
+        for attr in ['permalink', 'thumbs_up', 'author', 'defid', 'current_vote', 'thumbs_down', 'tags', 'sounds', 'lowercase_word', '_id']:
+            del obj[attr]
+        # remove extra quotation marks from the example attribute
+        obj['example'] = obj['example'].replace('"', '')
+        # replace newline and tab characters with a space in all attributes
+        for key, value in obj.items():
+            obj[key] = value.replace('\n', ' ').replace('\t', ' ').replace('\r', ' ')
+        for key, value in obj.items():
+            obj[key] = value.replace('  ', ' ')
+        fixed_data.append(obj)
     print(counter)
     counter += 1
 
@@ -21,6 +35,7 @@ with open('tunedWords.json', 'w') as f:
 with open('tunedWords.json', 'r') as infile:
     data = json.load(infile)
 
+# write the modified data to a new file without the removed attributes
 with open('../data/finalWords.json', 'w') as outfile:
     # Write each object on its own line, separated by commas
     outfile.write('[')
@@ -34,3 +49,5 @@ with open('../data/finalWords.json', 'w') as outfile:
         # Add a newline character to the end of each object
         outfile.write('\n')
     outfile.write(']')
+
+os.remove('tunedWords.json')
