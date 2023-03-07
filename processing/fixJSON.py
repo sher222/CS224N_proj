@@ -9,8 +9,9 @@ with open('../data/words.json', 'r') as f:
 fixed_data = []
 counter = 0
 for line in data.splitlines():
-    if counter >= 10000:
+    if counter >= 50000:
         break
+    
     obj = json.loads(line)
     # filter out words that contain more than one word
     if ' ' not in obj['word']:
