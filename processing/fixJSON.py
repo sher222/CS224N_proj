@@ -9,23 +9,38 @@ with open('../data/words.json', 'r') as f:
 fixed_data = []
 counter = 0
 for line in data.splitlines():
-    if counter >= 50000:
+    if counter >= 20000:
         break
     
     obj = json.loads(line)
     # filter out words that contain more than one word
+    contains_digit = False
     if ' ' not in obj['word']:
-        # remove the specified attributes from each object in the fixed_data list
-        for attr in ['permalink', 'thumbs_up', 'author', 'defid', 'current_vote', 'thumbs_down', 'tags', 'sounds', 'lowercase_word', '_id']:
-            del obj[attr]
-        # remove extra quotation marks from the example attribute
-        obj['example'] = obj['example'].replace('"', '')
-        # replace newline and tab characters with a space in all attributes
-        for key, value in obj.items():
-            obj[key] = value.replace('\n', ' ').replace('\t', ' ').replace('\r', ' ')
-        for key, value in obj.items():
-            obj[key] = value.replace('  ', ' ')
-        fixed_data.append(obj)
+
+        for char in obj['word']:
+            if char.isdigit():
+                contains_digit = True
+                break
+        for char in obj['definition']:
+            if char.isdigit():
+                contains_digit = True
+                break
+        for char in obj['example']:
+            if char.isdigit():
+                contains_digit = True
+                break
+        if not contains_digit:
+            # remove the specified attributes from each object in the fixed_data list
+            for attr in ['permalink', 'thumbs_up', 'author', 'defid', 'current_vote', 'thumbs_down', 'tags', 'sounds', 'lowercase_word', '_id']:
+                del obj[attr]
+            # remove extra quotation marks from the example attribute
+            obj['example'] = obj['example'].replace('"', '')
+            # replace newline and tab characters with a space in all attributes
+            for key, value in obj.items():
+                obj[key] = value.replace('\n', ' ').replace('\t', ' ').replace('\r', ' ')
+            for key, value in obj.items():
+                obj[key] = value.replace('  ', ' ')
+            fixed_data.append(obj)
     print(counter)
     counter += 1
 
